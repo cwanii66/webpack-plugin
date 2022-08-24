@@ -1,3 +1,8 @@
+function CALL_DELEGATE(...args) {
+    this.call = this._createCall('sync');
+    return this.call(...args);
+}
+
 class Hook {
     constructor(args = [], name = undefined) {
         // 保存初始化Hook时传递的参数
@@ -49,6 +54,16 @@ class Hook {
     _insert(item) {
         // // this._resetCompilation();
         this.taps.push(item);
+    }
+
+    // 编译最终生成的执行函数的方法
+    // compile是一个抽象方法 需要在继承Hook类的子类方法中进行实现
+    _createCall(type) {
+        return this.compile({
+            taps: this.taps,
+            args: this._args,
+            type: type
+        });
     }
     
     tap(options, fn) {
