@@ -53,14 +53,34 @@ class HookCodeFactory {
         code += 'var _x = this._x;\n';
         return code;
     }
-    contentWithInterceptors() {
+    contentWithInterceptors(options) {
         // 有拦截器
         if (this.options.interceptors.length) {
             // ...
         } else {
+            // content() 作为基类的content生成方法是抽象的，所以具体生成需要委托到子类
             return this.content(options);
         }
         // ...
+    }
+
+    // 基类方法，所以不需要子类额外定义，更好地解耦各个模块
+    // 根据this._x生成整体函数内容
+    callTapsSeries({ onError, onDone, rethrowIfPossible }) {
+        let code = '';
+        const _taps = this.options.taps;
+        let current = onDone;
+        // 没有注册事件则直接返回
+        if (_taps.length === 0) return onDone();
+        // 遍历taps注册的函数 编译生成需要执行的函数
+        for (let i = _taps.length - 1; i >= 0; i--) {
+            const done = current;
+            // 一个一个地创建对应函数调用
+            const content = this.callTap(i, { onDone: done });
+            current = () => content;
+        }
+        code += current();
+        return code;
     }
 
     /**
