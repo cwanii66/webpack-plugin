@@ -3,6 +3,7 @@ const HookCodeFactory = require('./HookCodeFactory.js');
 
 class SyncHookCodeFactory extends HookCodeFactory {
     
+    // 差异化方法
     content({ onError, onDone, rethrowIfPossible }) {
         return this.callTapsSeries({
             onError: (i, error) => onError(error),
@@ -21,7 +22,7 @@ const TAP_PROMISE = () => {
 }
 
 /**
- * 调用栈this.call() -> CALL_DELEGATE -> this._createCall() -> this.compile() -> hook.COMPILE()
+ * 调用栈this.call() -> CALL_DELEGATE -> this._createCall() -> this.compile() -> COMPILE()
  * @param {*} options
  */
 function COMPILE(options) {
