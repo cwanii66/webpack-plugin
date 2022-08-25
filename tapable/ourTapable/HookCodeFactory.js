@@ -54,7 +54,13 @@ class HookCodeFactory {
         return code;
     }
     contentWithInterceptors() {
-
+        // 有拦截器
+        if (this.options.interceptors.length) {
+            // ...
+        } else {
+            return this.content(options);
+        }
+        // ...
     }
 
     /**
