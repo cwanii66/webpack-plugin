@@ -48,7 +48,10 @@ class HookCodeFactory {
         // ...
     }
     header() {
-
+        let code;
+        code += 'var _context;\n';
+        code += 'var _x = this._x;\n';
+        return code;
     }
     contentWithInterceptors() {
 
