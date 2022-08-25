@@ -7,7 +7,7 @@ class HookCodeFactory {
     }
     // 初始化参数
     setup(instance, options) {
-        
+        instance._x = options.taps.maps(i => i.fn);
     }
     // 编译最终需要生成的函数
     create(options) {
