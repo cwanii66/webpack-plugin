@@ -78,9 +78,34 @@ class HookCodeFactory {
             // 一个一个地创建对应函数调用
             const content = this.callTap(i, { onDone: done });
             current = () => content;
+            code += current();
         }
-        code += current();
         return code;
+    }
+    // 编译生成单个注册的函数并调用: fn1 = this._x[0]; fn1(...args)
+    callTap(tapIndex, { onDone }) {
+        let code = '';
+        // 无论什么类型都要先通过下标获取内容var fn1 = _x[0]
+        code += `var _fn${tapIndex} = ${this.getTapFn(tapIndex)};\n`;
+        // 不同类型的调用方式不同
+        // 生成调用代码 fn1(arg1, arg2, ...)
+        const tap = this.options.taps[tapIndex];
+        switch (tap.type) {
+            case 'sync':
+                code += `fn${tapIndex}(${this.args()});\n`;
+                break;
+            // 其他类型
+            default:
+                break;
+        }
+        if(onDone) {
+            code += onDone();
+        }
+        return code;
+    }
+    // 从this._x 中获取函数内容 this._x[index]
+    getTapFn(index) {
+        return `_x[${index}]`;
     }
 
     /**
