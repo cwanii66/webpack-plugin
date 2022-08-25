@@ -24,7 +24,7 @@ class HookCodeFactory {
                         onError: (err) => `throw ${err};\n`,
                         onResult: (res) => `return ${res};\n`,
                         resultReturns: true,
-                        onDone: () => '',
+                        onDone: () => 'console.log("倒序遍历开始...");\n',
                         rethrowIfPossible: true,
                     })
                 );
@@ -36,10 +36,10 @@ class HookCodeFactory {
         return fn;
     }
 
-    args({ before, after }) {
+    args(/*{ before, after }*/) {
         let allArgs = this._args;
-        if (before) allArgs = [ before ].concat(allArgs);
-        if (after) allArgs = allArgs.concat(after);
+        // if (before) allArgs = [ before ].concat(allArgs);
+        // if (after) allArgs = allArgs.concat(after);
         if (allArgs.length === 0) {
             return '';
         } else {
@@ -48,7 +48,7 @@ class HookCodeFactory {
         // ...
     }
     header() {
-        let code;
+        let code = '';
         code += 'var _context;\n';
         code += 'var _x = this._x;\n';
         return code;
@@ -74,12 +74,13 @@ class HookCodeFactory {
         if (_taps.length === 0) return onDone();
         // 遍历taps注册的函数 编译生成需要执行的函数
         for (let i = _taps.length - 1; i >= 0; i--) {
+            // 当前函数编译完成？
             const done = current;
             // 一个一个地创建对应函数调用
             const content = this.callTap(i, { onDone: done });
             current = () => content;
-            code += current();
         }
+        code += current();
         return code;
     }
     // 编译生成单个注册的函数并调用: fn1 = this._x[0]; fn1(...args)
@@ -92,7 +93,7 @@ class HookCodeFactory {
         const tap = this.options.taps[tapIndex];
         switch (tap.type) {
             case 'sync':
-                code += `fn${tapIndex}(${this.args()});\n`;
+                code += `_fn${tapIndex}(${this.args()});\n`;
                 break;
             // 其他类型
             default:

@@ -47,7 +47,7 @@ class Hook {
             throw new Error('Missing name for tap');
         }
         // 合并参数
-        Object.assign({ type, fn }, options);
+        options = Object.assign({ type, fn }, options);
         // 基于合并后options去 insert fn
         this._insert(options);
     }
@@ -65,7 +65,7 @@ class Hook {
     _createCall(type) {
         return this.compile({
             taps: this.taps,
-            // interceptors: this.interceptors,
+            interceptors: this.interceptors,
             args: this._args,
             type: type
         });
