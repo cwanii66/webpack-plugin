@@ -52,8 +52,12 @@ class Hook {
         this._insert(options);
     }
     _insert(item) {
-        // // this._resetCompilation();
+        this._resetCompilation();
         this.taps.push(item);
+    }
+    // 每次tap都会调用_resetCompilation 重新赋值this.call
+    _resetCompilation() {
+        this.call = this._call;
     }
 
     // 编译最终生成的执行函数的方法
@@ -61,6 +65,7 @@ class Hook {
     _createCall(type) {
         return this.compile({
             taps: this.taps,
+            // interceptors: this.interceptors,
             args: this._args,
             type: type
         });
